@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Animes</title>
+</head>
+<body>
+    <h1>Top Animes</h1>
+    {% for anime in animes %}
+        <li> {{ anime.title }} </li>
+        <img src="{{ anime.images.jpg.image_url }}" alt="{{ anime.title }}" width="150"><br>
+    {% endfor%}
+    <ul>
+        <div>
+            {% if pagination.has_previous_page %}
+                <a href="?page={{ current_page|add:"-1" }}">Previous</a>
+            {% endif %}
+
+            page {{ current_page }}
+
+            {% if pagination.has_next_page %}
+                <a href="?page={{ current_page|add:"1" }}">Next</a>
+            {% endif %}
+        </div>
+    </ul>
+</body>
+</html>
