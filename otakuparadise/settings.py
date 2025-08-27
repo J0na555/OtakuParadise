@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'manga',
     'news',
     'quotes',
-    'waifus'
+    'waifus',
 ]
 
 MIDDLEWARE = [
