@@ -6,6 +6,7 @@ def top_anime(request):
     url = f"https://api.jikan.moe/v4/top/anime?page={page}"
 
 
+
     response = requests.get(url)
     json_data = response.json()
 

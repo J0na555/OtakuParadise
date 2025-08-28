@@ -6,7 +6,7 @@
     <title>anime-list</title>
 </head>
 <body>
-    <h1>Anime anime-list</h1>
+    <h1>Anime list</h1>
 
 <form method="get" action="">
     <input type="text" name="q" placeholder="Search anime..." value="{{ query }}">
@@ -29,7 +29,7 @@
     <ul>
         {% for anime in animes %}
             <li> {{ anime.title }} </li>
-            <img src="{{ anime.images.jpg.image_url }}" alt="{{ anime.title }}" width="150">
+            <img src="{{ anime.images.jpg.image_url }}" alt="{{ anime.title }}" width="250">
         {% empty %}
             <li>No anime found</li>
         {% endfor %}
