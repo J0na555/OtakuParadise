@@ -6,4 +6,5 @@ urlpatterns = [
     path('', include('animes.urls')),
     path('manga/', include('manga.urls')),
     path('quotes/', include('quotes.urls')),
+    path('news/', include('news.urls')),
 ]
