@@ -6,7 +6,30 @@
     <title>news</title>
 </head>
 <body>
-    <h1>News</h1>
+    <h1>News</h1> 
+
+    <form action="" method="get">
+        <input type="text" name="q", placeholder="Search by anime" value="{{ query }}">
+        <button action="submit" >Search</button>
+    </form>
+
+
+    {% if search %}
+        <h2>Search results</h2>    
+        <ul>
+            {% for article in search %}
+                <li>
+                    <h2>{{ newss.title }}</h2>
+                    {% if newss.images.jpg.image_url %}
+                        <img src="{{ newss.images.jpg.image_url}}" alt="{{ newss.title }}" width="250"><br>
+                    {% endif %}
+                    <p>By: {{ newss.author_username|default:"Unknown" }}</p>
+                    <p>{{ newss.date|date:"F j, Y, g:i a" }}</p>
+                    <a href="{{ newss.url }}" target="_blank">Read full article ➡️</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     <ul>
         {% for newss in news %}

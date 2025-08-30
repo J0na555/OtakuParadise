@@ -6,11 +6,29 @@ def news_feed(request):
     popular_animes_ids = [22,2, 1698, 1161, 135]
     popular_manga_ids = []
     page = int(request.GET.get('page', 1))
+    query = request.GET.get('q')
+    anime_data = []
+    news_data = []
 
-    manga_news_url = f"https://api.jikan.moe/v4/manga/{id}/news"
+
 
     all_news = []
 
+    if query:
+        # calling the search endpoints
+        anime_response = requests.get("https://api.jikan.moe/v4/anime?q="+query)
+        # getting the first search result
+        anime_json = anime_response.json()
+        anime_id = anime_json['data'][0]['mal_id']
+
+        anime_data = anime_json['data'][0]
+
+        # using id to fetch news
+        news_response = requests.get(f"https://api.jikan.moe/v4/anime/{anime_id}/news")
+        news_json = news_response.json()
+        news_data = news_json['data']
+    else:
+        news_data = None
 
 
     for anime_id in popular_animes_ids:
@@ -46,5 +64,8 @@ def news_feed(request):
         'pagination':pagination,
         'current_page':page,
         'news':paginated_news,
+        'query': query,
+        'anime':anime_data,
+        'search':news_data,
     })
 

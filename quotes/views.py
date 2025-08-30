@@ -13,7 +13,7 @@ def quote_list(request):
 
     # 1️⃣ Fetch all quotes
     try:
-        response = requests.get(f"{API_BASE}/quotes")  # or your main endpoint
+        response = requests.get(f"{API_BASE}/quotes")  
         data = response.json()
     except Exception:
         data = []
