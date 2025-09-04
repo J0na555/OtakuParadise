@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>manga-list</title>
+</head>
+<body>
+    <h1>Manga list</h1>
+
+    <form action="" method="get">
+        <input type="text"name="q" placeholder="Search manga" value="{{query}}" >
+        <input type="number"name="year" placeholder="Year" value="{{year}}" >
+        <input type="number"name="min_score" placeholder="Min score" value="{{min_score}}" >
+
+        <h3>Genres</h3>
+        {% for genre in all_genres %}
+            <label >
+                <input type="checkbox" name="genres" value="{{ genre.mal_id }}" 
+                    {% if genre.mal_id|stringformat:"s" in selected_genres %}checked{% endif %}>
+                {{ genre.name }}
+            </label><br>
+        {% endfor %}
+        <button type="submit">Filter</button>
+    </form>
+    
+
+    <ul>
+        {% for manga in mangas %}
+            <li> {{ manga.title }}</li>
+            <img src="{{ manga.images.jpg.image_url}}" alt="{{ manga.title}}" width="250">
+        {% empty %}
+            <li>No manga found</li>
+        {% endfor %}
+    </ul>
+    <div>
+        {% if pagination.has_previous_page %}
+            <a href="?q={{ query }}{% for g in selected_genres %}&genres={{ g }}{% endfor %}&year={{ year }}&min_score={{ min_score }}&page={{ current_page|add:"-1" }}">Previous</a>
+        {% endif %}
+
+        page {{ current_page }}
+
+        {% if pagination.has_next_page %}
+            <a href="?q={{ query }}{% for g in selected_genres %}&genres={{ g }}{% endfor %}&year={{ year }}&min_score={{ min_score }}&page={{ current_page|add:"1" }}">Next</a>
+        {% endif %}
+    </div>
+</body>
+</html>
