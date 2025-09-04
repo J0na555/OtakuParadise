@@ -39,7 +39,7 @@ def anime_list(request):
     if min_score:
         params["min_score"] = min_score
     
-    response = requests.get("https://api.jikan.moe/v4/anime", params=params)
+    response = requests.get("https://api.jikan.moe/v4/top/anime", params=params)
     json_data = response.json()
     anime_list = json_data.get('data', [])
     pagination = json_data.get('pagination', {})
