@@ -1,11 +1,22 @@
 <h1>{{ char.character.name }}</h1>
-<img src="{{ char.character.images.jpg.image_url }}" width="150" alt="{{ char.character.name}}">
-<p>{{ char.character.about|linebreaks }}</p>
+<img src="{{ character.images.jpg.image_url }}" width="150" alt="{{ character.name}}">
+<h3>{{ character.name_kanji }} {{ character.name }}</h3>
+<p>{{ character.about|linebreaks }}</p>
 
+<h3>Anime Appearances</h3>
+<ul>
+    {% for anime in anime_roles%}
+        <li>
+            {{ anime.anime.title}} - {{ anime.role}}
+        </li>
+    {% empty %}
+        <p>No anime role found</p>
+    {% endfor %}
+</ul>
 
 <h3>Nicknames:</h3>
 <ul>
-    {%  for n in char.character.nicknames %}
+    {%  for n in character.nicknames %}
         <li>{{ n }}</li>
     {% empty %}
         <li>No Nicknames</li>

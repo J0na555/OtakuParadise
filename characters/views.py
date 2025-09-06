@@ -81,14 +81,20 @@ def character_list(request):
 
 
 def character_detail(request, id):
+    base_url = "https://api.jikan.moe/v4/characters"
     url = f"https://api.jikan.moe/v4/characters/{id}/full"
     info = requests.get(url)
     character = {}
     if info.status_code == 200:
         character = info.json().get('data', {})
+    
+    anime_response = requests.get(f"{base_url}/{id}/anime")
+    anime_roles = anime_response.json().get('data', []) if anime_response.status_code == 200 else []
+
      
     return render(request, 'characters/character_detail.html', {
-        'character': character
+        'character': character,
+        'anime_roles': anime_roles
     })
 
     
