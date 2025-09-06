@@ -1,0 +1,15 @@
+<h1>{{ char.character.name }}</h1>
+<img src="{{ char.character.images.jpg.image_url }}" width="150" alt="{{ char.character.name}}">
+<p>{{ char.character.about|linebreaks }}</p>
+
+
+<h3>Nicknames:</h3>
+<ul>
+    {%  for n in char.character.nicknames %}
+        <li>{{ n }}</li>
+    {% empty %}
+        <li>No Nicknames</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'characters:character_list' %}">Back</a>
