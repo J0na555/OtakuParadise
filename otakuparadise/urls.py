@@ -7,4 +7,5 @@ urlpatterns = [
     path('manga/', include('manga.urls')),
     path('quotes/', include('quotes.urls')),
     path('news/', include('news.urls')),
+    path('characters/', include('characters.urls')),
 ]

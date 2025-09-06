@@ -1,0 +1,61 @@
+<h1>Anime Characters</h1>
+<form class="mb-4" method="get" >
+    <input type="text" name="q" placeholder="Search..." value="{{ query }}">
+    <select name="type">
+        <option value="Character" {% if search_type == "character" %} selected {% endif %} >By Character</option>
+        <option value="Anime" {% if search_type == "anime" %} selected {% endif %}>By Anime</option>
+    </select>
+    <button type="submit">Submit</button>
+</form>
+
+{% if query %}
+    <h2>search result for {{query}} </h2>
+    {% if results %}
+        <ul>
+            {% for char in results %}
+                <li>
+                    <a href="{% url 'character_detail' char.character.mal_id %}">
+                        <img src="{{ char.character.images.jpg.image_url }}" width="350" alt="{{ char.character.name}}">
+                        {{ char.character.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <div>
+            {% if page > 1 %}
+                <a href="?query={{ query }}&type={{ search_type }}&page={{ page|add:"-1" }}">Prev</a>
+            {% endif %}
+            <span>Page {{ page }} of {{ total_pages }}</span>
+            {% if page < total_pages %}
+                <a href="?query={{ query }}&type={{ search_type }}&page={{ page|add:"1" }}">Next</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>No Result Found.</p>
+    {% endif %}
+{% endif %}
+
+<h2>Top Characters</h2>
+<ul>
+    {% for char in top_characters %}
+        <li>
+            <a href="{% url 'characters:character_detail' char.mal_id %}">
+                <img src="{{ char.images.jpg.image_url }}" width="150" alt="{{ char.name }}">
+                {{ char.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+<div>
+    {% if page > 1 %}
+        <a href="?page={{ page|add:"-1" }}">Prev</a>
+    {% endif %}
+    <span>Page {{ page }}</span>
+    {% if page < 50 %}  <!-- Jikan top API has ~50 pages -->
+        <a href="?page={{ page|add:"1" }}">Next</a>
+    {% endif %}
+</div>
+
+
+
