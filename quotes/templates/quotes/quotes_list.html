@@ -1,17 +1,15 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %} News - Otaku Paradise {% endblock %}
 
 {% block content %}
   <title>Quotes</title>
   <style>
-    body { font-family: sans-serif; margin: 20px; }
     .quote-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
     .quote-text { font-size: 1.1em; margin-bottom: 8px; }
     .quote-meta { font-size: 0.9em; color: #555; }
     .featured { background-color: #f9f9f9; }
     .filters { margin-bottom: 20px; }
-    .pagination a { margin: 0 5px; text-decoration: none; }
-    .pagination span { margin: 0 5px; }
   </style>
 </head>
 <body>
@@ -58,17 +56,34 @@
     {% endfor %}
 
     <!-- Pagination Controls -->
-    <div class="pagination">
+    <div class="pagination-container">
       {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&anime={{ anime_filter }}&character={{ character_filter }}">Previous</a>
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&anime={{ anime_filter }}&character={{ character_filter }}">
+          <i class="fas fa-chevron-left me-1"></i>  Previous
+        </a>
+      {% else %}
+            <span class="pagination-btn disabled">
+                <i class="fas fa-chevron-left me-1"></i> Previous
+            </span>
       {% endif %}
-      <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      <div class="pagination-info">
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&anime={{ anime_filter }}&character={{ character_filter }}">Next</a>
-      {% endif %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&anime={{ anime_filter }}&character={{ character_filter }}">
+            Next <i class="fas fa-chevron-right ms-1"></i>
+        </a>
+    {% else %}
+        <span class="pagination-btn disabled">
+            Next <i class="fas fa-chevron-right ms-1"></i>
+        </span>
+    {% endif %}
     </div>
   {% else %}
     <p>No quotes found.</p>
   {% endif %}
 </body>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'manga/css/manga.css' %}">
 {% endblock %}
