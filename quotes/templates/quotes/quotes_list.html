@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
+{% block title %} News - Otaku Paradise {% endblock %}
+
+{% block content %}
   <title>Quotes</title>
   <style>
     body { font-family: sans-serif; margin: 20px; }
@@ -72,4 +71,4 @@
     <p>No quotes found.</p>
   {% endif %}
 </body>
-</html>
+{% endblock %}
