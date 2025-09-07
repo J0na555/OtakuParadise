@@ -23,19 +23,19 @@
             <div class="collapse navbar-collapse" id="navbarContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#"><i class="fas fa-film me-1"></i> Anime</a>
+                        <a class="nav-link active" href="{% url 'animes:list' %}"><i class="fas fa-film me-1"></i> Anime</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-book me-1"></i> Manga</a>
+                        <a class="nav-link" href="{% url 'manga:list' %}"><i class="fas fa-book me-1"></i> Manga</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-newspaper me-1"></i> News</a>
+                        <a class="nav-link" href="{% url 'news:feed' %}"><i class="fas fa-newspaper me-1"></i> News</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-quote-left me-1"></i> Quotes</a>
+                        <a class="nav-link" href="{% url 'quotes:list' %}"><i class="fas fa-quote-left me-1"></i> Quotes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-users me-1"></i> Characters</a>
+                        <a class="nav-link" href="{% url 'characters:list' %}"><i class="fas fa-users me-1"></i> Characters</a>
                     </li>
                 </ul>
             </div>
