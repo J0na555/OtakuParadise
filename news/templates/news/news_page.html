@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>news</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %} News - Otaku Paradise {% endblock %}
+
+{% block content %}
     <h1>News</h1> 
 
     <form action="" method="get">
@@ -57,5 +53,4 @@
             <a href="?page={{ current_page|add:"1" }}">Next</a>
         {% endif %}
     </nav>    
-</body>
-</html>
+{% endblock %}

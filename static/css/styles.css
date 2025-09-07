@@ -1,0 +1,51 @@
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 80px; /* Account for fixed navbar */
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 1rem;
+        }
+        .navbar-brand {
+            font-weight: 700;
+            color: #fff !important;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .nav-link {
+            color: rgba(255, 255, 255, 0.85) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+        .nav-link:hover {
+            color: #fff !important;
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff !important;
+        }
+        .navbar-toggler {
+            border: none;
+            color: white !important;
+            padding: 0.5rem;
+        }
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        @media (max-width: 992px) {
+            .navbar-nav {
+                padding: 10px 0;
+            }
+            .nav-link {
+                margin: 2px 0;
+            }
+        }

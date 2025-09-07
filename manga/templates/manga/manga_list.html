@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>manga-list</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %} Manga - Otaku Paradise {% endblock %}
+
+{% block content %}
     <h1>Manga list</h1>
 
     <form action="" method="get">
@@ -44,5 +40,4 @@
             <a href="?q={{ query }}{% for g in selected_genres %}&genres={{ g }}{% endfor %}&year={{ year }}&min_score={{ min_score }}&page={{ current_page|add:"1" }}">Next</a>
         {% endif %}
     </div>
-</body>
-</html>
+{% endblock %}

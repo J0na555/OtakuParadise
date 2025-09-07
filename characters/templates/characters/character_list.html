@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% block title %} Characters - Otaku Paradise {% endblock %}
+
+{% block content %}
 <h1>Anime Characters</h1>
 <form class="mb-4" method="get" >
     <input type="text" name="q" placeholder="Search..." value="{{ query }}">
@@ -56,6 +60,7 @@
         <a href="?page={{ page|add:"1" }}">Next</a>
     {% endif %}
 </div>
+{% endblock %}
 
 
 

@@ -1,12 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>anime-list</title>
-</head>
-<body>
-    <h1>Anime list</h1>
+{% extends "base.html" %}
+{% block title %} Anime - Otaku Paradise {% endblock %}
+
+{% block content %}
+<h1>Anime list</h1>
 
 <form method="get" action="">
     <input type="text" name="q" placeholder="Search anime..." value="{{ query }}">
@@ -46,7 +42,4 @@
             <a href="?q={{ query }}{% for g in selected_genres %}&genres={{ g }}{% endfor %}&year={{ year }}&min_score={{ min_score }}&page={{ current_page|add:"1" }}">Next</a>
         {% endif %}
     </div>
-
-
-</body>
-</html>
+{% endblock %}

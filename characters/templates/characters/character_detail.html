@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+{% block title %} Anime - Otaku Paradise {% endblock %}
+
+{% block content %}
 <h1>{{ char.character.name }}</h1>
 <img src="{{ character.images.jpg.image_url }}" width="150" alt="{{ character.name}}">
 <h3>{{ character.name_kanji }} {{ character.name }}</h3>
@@ -24,3 +28,4 @@
 </ul>
 
 <a href="{% url 'characters:character_list' %}">Back</a>
+{% endblock %}
