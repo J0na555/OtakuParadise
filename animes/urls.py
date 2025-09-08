@@ -7,4 +7,5 @@ app_name = "animes"
 urlpatterns = [
     path('top_anime/', views.top_anime, name= 'top-anime'),
     path('', views.anime_list, name= 'list'),
+    path('<int:id>/', views.anime_detail, name='anime_detail')
 ]

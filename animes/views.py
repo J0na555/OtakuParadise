@@ -62,9 +62,21 @@ def anime_list(request):
         'all_genres': all_genres,
     })
 
+def anime_detail(request, id):
+    url = f"https://api.jikan.moe/v4/anime/{id}"
+    info = requests.get(url)
+    anime = {}
+    if info.status_code == 200:
+        anime = info.json().get('data', {})
+
+    title_english = next((t["title"] for t in anime.get("titles", []) if t["type"] == "English"), "")
+    title_japanese = next((t["title"] for t in anime.get("titles", []) if t["type"] == "Japanese"), "")
     
-
-
+    return render(request, "animes/anime_detail.html", {
+        "anime": anime,
+        "title_english": title_english,
+        "title_japanese": title_japanese,
+    })
 
 
 

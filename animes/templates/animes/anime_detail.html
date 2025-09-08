@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} {{ anime.title_english }} - Otaku Paradise{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-4">
+        <a href="{% url 'animes:list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Anime List
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-lg mb-5">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="{{ anime.images.jpg.image_url }}" class="img-fluid rounded-start h-100" alt="{{ anime.title_english }}" style="object-fit: cover;">
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card-body p-4">
+                    <h1 class="card-title display-5 fw-bold mb-2" style="color: #6a11cb;">{{ anime.title_english }}</h1>
+                    <h2 class="card-subtitle mb-4 text-muted">{{ anime.title_japanese }}</h2>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <span class="badge bg-primary fs-6 py-2">{{ anime.status }}</span>
+                        {% if anime.score %}
+                            <span class="badge bg-warning text-dark fs-6 py-2">
+                                <i class="fas fa-star me-1"></i>{{ anime.score }}
+                            </span>
+                        {% endif %}
+                        {% if anime.episodes %}
+                            <span class="badge bg-info fs-6 py-2">{{ anime.episodes }} Episodes</span>
+                        {% endif %}
+                        {% if anime.duration %}
+                            <span class="badge bg-secondary fs-6 py-2">{{ anime.duration }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if anime.genres %}
+                    <div class="mb-4">
+                        <h5 class="mb-2"><i class="fas fa-tags me-2"></i>Genres</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for genre in anime.genres %}
+                                <span class="badge rounded-pill bg-gradient genre-badge">{{ genre.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if anime.synopsis %}
+                    <div class="mb-4">
+                        <h5 class="mb-2"><i class="fas fa-book-open me-2"></i>Synopsis</h5>
+                        <p class="card-text synopsis-text">{{ anime.synopsis }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if anime.trailer and anime.trailer.url %}
+                    <div class="mt-4">
+                        <a href="{{ anime.trailer.url }}" target="_blank" class="btn btn-danger btn-lg">
+                            <i class="fas fa-play-circle me-2"></i>Watch Trailer
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if anime.aired or anime.studios or anime.source %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Additional Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% if anime.aired %}
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Aired</h6>
+                            <p class="mb-0">{{ anime.aired.string }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if anime.studios %}
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Studio</h6>
+                            <p class="mb-0">
+                                {% for studio in anime.studios %}
+                                    {{ studio.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if anime.source %}
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Source</h6>
+                            <p class="mb-0">{{ anime.source }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if anime.rating %}
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Rating</h6>
+                            <p class="mb-0">{{ anime.rating }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'animes/css/detail.css' %}">
+{% endblock %}
