@@ -1,3 +1,49 @@
+.anime-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+.anime-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+.synopsis-truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.genre-checkboxes::-webkit-scrollbar {
+    width: 6px;
+}
+.genre-checkboxes::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+.genre-checkboxes::-webkit-scrollbar-thumb {
+    background: #c4c4c4;
+    border-radius: 10px;
+}
+.genre-checkboxes::-webkit-scrollbar-thumb:hover {
+    background: #a0a0a0;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    border: none;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5a0db9 0%, #1c67e3 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(38, 117, 252, 0.3);
+}
+.form-check-input:checked {
+    background-color: #6a11cb;
+    border-color: #6a11cb;
+}
+/* Make the filters sticky on scroll */
+.sticky-top {
+    z-index: 100;
+}
 .pagination-container {
     display: flex;
     justify-content: center;
