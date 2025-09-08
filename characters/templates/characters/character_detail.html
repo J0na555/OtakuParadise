@@ -1,31 +1,105 @@
 {% extends "base.html" %}
-{% block title %} characters - Otaku Paradise {% endblock %}
+{% load static %}
+{% block title %} {{ character.name }} - Otaku Paradise {% endblock %}
 
 {% block content %}
-<h1>{{ char.character.name }}</h1>
-<img src="{{ character.images.jpg.image_url }}" width="150" alt="{{ character.name}}">
-<h3>{{ character.name_kanji }} {{ character.name }}</h3>
-<p>{{ character.about|linebreaks }}</p>
+<div class="container mt-4">
+    <div class="mb-4">
+        <a href="{% url 'characters:list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Characters
+        </a>
+    </div>
 
-<h3>Anime Appearances</h3>
-<ul>
-    {% for anime in anime_roles%}
-        <li>
-            {{ anime.anime.title}} - {{ anime.role}}
-        </li>
-    {% empty %}
-        <p>No anime role found</p>
-    {% endfor %}
-</ul>
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg">
+                <img src="{{ character.images.jpg.image_url }}" class="card-img-top" alt="{{ character.name }}" style="height: 400px; object-fit: cover;">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="ps-md-4">
+                <h1 class="display-4 fw-bold mb-2" style="color: #6a11cb;">{{ character.name }}</h1>
+                {% if character.name_kanji %}
+                    <h3 class="text-muted mb-4">{{ character.name_kanji }}</h3>
+                {% endif %}
+                
+                {% if character.nicknames %}
+                <div class="mb-4">
+                    <h4 class="mb-3"><i class="fas fa-signature me-2"></i>Nicknames</h4>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for n in character.nicknames %}
+                            <span class="badge bg-primary fs-6 py-2">{{ n }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 
-<h3>Nicknames:</h3>
-<ul>
-    {%  for n in character.nicknames %}
-        <li>{{ n }}</li>
-    {% empty %}
-        <li>No Nicknames</li>
-    {% endfor %}
-</ul>
+    {% if character.about %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0"><i class="fas fa-info-circle me-2"></i>About</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-text about-text">{{ character.about|linebreaks }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
-<a href="{% url 'characters:list' %}">Back</a>
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0"><i class="fas fa-film me-2"></i>Anime Appearances</h3>
+                </div>
+                <div class="card-body">
+                    {% if anime_roles %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Anime</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for anime in anime_roles %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    {% if anime.anime.images.jpg.image_url %}
+                                                    <img src="{{ anime.anime.images.jpg.image_url }}" alt="{{ anime.anime.title }}" width="50" height="70" class="rounded me-3" style="object-fit: cover;">
+                                                    {% endif %}
+                                                    <span>{{ anime.anime.title }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary">{{ anime.role }}</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-theater-masks fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No anime appearances found</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'characters/css/detail.css' %}">
 {% endblock %}

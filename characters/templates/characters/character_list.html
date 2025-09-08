@@ -3,85 +3,167 @@
 {% block title %} Characters - Otaku Paradise {% endblock %}
 
 {% block content %}
-<h1>Anime Characters</h1>
-<form class="mb-4" method="get" >
-    <input type="text" name="q" placeholder="Search..." value="{{ query }}">
-    <select name="type">
-        <option value="Character" {% if search_type == "character" %} selected {% endif %} >By Character</option>
-        <option value="Anime" {% if search_type == "anime" %} selected {% endif %}>By Anime</option>
-    </select>
-    <button type="submit">Submit</button>
-</form>
-
-{% if query %}
-    <h2>search result for {{query}} </h2>
-    {% if results %}
-        <ul>
-            {% for char in results %}
-                <li>
-                    <a href="{% url 'character_detail' char.character.mal_id %}">
-                        <img src="{{ char.character.images.jpg.image_url }}" width="350" alt="{{ char.character.name}}">
-                        {{ char.character.name }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-        <div>
-            {% if page > 1 %}
-                <a href="?query={{ query }}&type={{ search_type }}&page={{ page|add:"-1" }}">Prev</a>
-            {% endif %}
-            <span>Page {{ page }} of {{ total_pages }}</span>
-            {% if page < total_pages %}
-                <a href="?query={{ query }}&type={{ search_type }}&page={{ page|add:"1" }}">Next</a>
-            {% endif %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-center" style="color: #6a11cb;">Anime Characters</h1>
+            <p class="text-center text-muted">Discover your favorite characters from the anime world</p>
         </div>
-    {% else %}
-        <p>No Result Found.</p>
-    {% endif %}
-{% endif %}
-
-<h2>Top Characters</h2>
-<ul>
-    {% for char in top_characters %}
-        <li>
-            <a href="{% url 'characters:character_detail' char.mal_id %}">
-                <img src="{{ char.images.jpg.image_url }}" width="150" alt="{{ char.name }}">
-                {{ char.name }}
-            </a>
-        </li>
-    {% endfor %}
-</ul>
-
-<div class="pagination-container">
-    {% if page > 1 %}
-        <a href="?page={{ page|add:"-1" }}">
-            <i class="fas fa-chevron-left ms-1"></i> Previous
-        </a>
-    {% else %}
-        <span class="pagination-btn disabled">
-            <i class="fas fa-chevron-left ms-1"></i> Previous
-        </span>
-
-    {% endif %}
-    <div class="pagination-info">
-        Page<span> {{ page }}</span>
     </div>
 
-    {% if page < 50 %}  <!-- Jikan top API has ~50 pages -->
-        <a href="?page={{ page|add:"1" }}">
-            Next <i class="fas fa-chevron-right ms-1"></i>
-        </a>
-    {% else %}
-        <span class="pagination-btn disabled">
-            Next <i class="fas fa-chevron-right ms-1"></i>
-        </span>
-    {% endif %}
-</div>
-{% endblock %} 
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label for="searchInput" class="form-label">Search Characters</label>
+                            <input type="text" class="form-control" id="searchInput" name="q" placeholder="Search by name..." value="{{ query }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="typeSelect" class="form-label">Search Type</label>
+                            <select class="form-select" id="typeSelect" name="type">
+                                <option value="character" {% if search_type == "character" %}selected{% endif %}>By Character</option>
+                                <option value="anime" {% if search_type == "anime" %}selected{% endif %}>By Anime</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'characters/css/characters.css' %}">
+    {% if query %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h2 class="mb-4">Search Results for "{{ query }}"</h2>
+                    {% if results %}
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                            {% for char in results %}
+                                <div class="col">
+                                    <div class="card h-100 border-0 shadow-sm character-card">
+                                        <div class="position-relative">
+                                            <img src="{{ char.character.images.jpg.image_url }}" class="card-img-top" alt="{{ char.character.name }}" style="height: 300px; object-fit: cover;">
+                                        </div>
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">{{ char.character.name }}</h5>
+                                        </div>
+                                        <div class="card-footer bg-white border-0">
+                                            <a href="{% url 'character_detail' char.character.mal_id %}" class="btn btn-outline-primary w-100">
+                                                View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if results %}
+                        <div class="pagination-container mt-4">
+                            {% if page > 1 %}
+                                <a class="pagination-btn" href="?q={{ query }}&type={{ search_type }}&page={{ page|add:'-1' }}">
+                                    <i class="fas fa-chevron-left me-1"></i> Previous
+                                </a>
+                            {% else %}
+                                <span class="pagination-btn disabled">
+                                    <i class="fas fa-chevron-left me-1"></i> Previous
+                                </span>
+                            {% endif %}
+                            
+                            <div class="pagination-info">
+                                Page <span class="page-number">{{ page }}</span> of {{ total_pages }}
+                            </div>
+                            
+                            {% if page < total_pages %}
+                                <a class="pagination-btn" href="?q={{ query }}&type={{ search_type }}&page={{ page|add:'1' }}">
+                                    Next <i class="fas fa-chevron-right ms-1"></i>
+                                </a>
+                            {% else %}
+                                <span class="pagination-btn disabled">
+                                    Next <i class="fas fa-chevron-right ms-1"></i>
+                                </span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Results Found</h4>
+                            <p class="text-muted">Try adjusting your search query or filters</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <h2 class="mb-0"><i class="fas fa-crown me-2 text-warning"></i>Top Characters</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+                        {% for char in top_characters %}
+                            <div class="col">
+                                <div class="card h-100 border-0 shadow-sm character-card">
+                                    <div class="position-relative">
+                                        <img src="{{ char.images.jpg.image_url }}" class="card-img-top" alt="{{ char.name }}" style="height: 250px; object-fit: cover;">
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title">{{ char.name }}</h6>
+                                    </div>
+                                    <div class="card-footer bg-white border-0 pt-0">
+                                        <a href="{% url 'characters:character_detail' char.mal_id %}" class="btn btn-sm btn-outline-primary w-100">
+                                            Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="pagination-container mt-4">
+                        {% if page > 1 %}
+                            <a class="pagination-btn" href="?page={{ page|add:'-1' }}">
+                                <i class="fas fa-chevron-left me-1"></i> Previous
+                            </a>
+                        {% else %}
+                            <span class="pagination-btn disabled">
+                                <i class="fas fa-chevron-left me-1"></i> Previous
+                            </span>
+                        {% endif %}
+                        
+                        <div class="pagination-info">
+                            Page <span class="page-number">{{ page }}</span>
+                        </div>
+                        
+                        {% if page < 50 %}  <!-- Jikan top API has ~50 pages -->
+                            <a class="pagination-btn" href="?page={{ page|add:'1' }}">
+                                Next <i class="fas fa-chevron-right ms-1"></i>
+                            </a>
+                        {% else %}
+                            <span class="pagination-btn disabled">
+                                Next <i class="fas fa-chevron-right ms-1"></i>
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-
-
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'characters/css/characters.css' %}">
+{% endblock %}
