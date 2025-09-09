@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} {{ manga.title_english }} - Otaku Paradise {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="mb-4">
+        <a href="{% url 'manga:list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Manga List
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-lg mb-5">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="{{ manga.images.jpg.image_url }}" class="img-fluid rounded-start h-100" alt="{{ manga.title_english }}" style="object-fit: cover;">
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card-body p-4">
+                    <h1 class="card-title display-5 fw-bold mb-2" style="color: #6a11cb;">{{ manga.title_english }}</h1>
+                    <h2 class="card-subtitle mb-4 text-muted">{{ manga.title_japanese }}</h2>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <span class="badge bg-primary fs-6 py-2">{{ manga.status }}</span>
+                        {% if manga.score %}
+                            <span class="badge bg-warning text-dark fs-6 py-2">
+                                <i class="fas fa-star me-1"></i>{{ manga.score }}
+                            </span>
+                        {% endif %}
+                        {% if manga.chapters %}
+                            <span class="badge bg-info fs-6 py-2">{{ manga.chapters }} Chapters</span>
+                        {% endif %}
+                        {% if manga.volumes %}
+                            <span class="badge bg-secondary fs-6 py-2">{{ manga.volumes }} Volumes</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if manga.genres %}
+                    <div class="mb-4">
+                        <h5 class="mb-3"><i class="fas fa-tags me-2"></i>Genres</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for genre in manga.genres %}
+                                <span class="badge rounded-pill bg-gradient genre-badge text-dark">{{ genre.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if manga.synopsis %}
+                    <div class="mb-4">
+                        <h5 class="mb-2"><i class="fas fa-book-open me-2"></i>Synopsis</h5>
+                        <p class="card-text synopsis-text">{{ manga.synopsis }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if manga.authors or manga.serializations or manga.published %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h4 class="mb-0"><i class="fas fa-info-circle me-2"></i>Additional Information</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% if manga.authors %}
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Authors</h6>
+                            <p class="mb-0">
+                                {% for author in manga.authors %}
+                                    {{ author.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if manga.serializations %}
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Serialization</h6>
+                            <p class="mb-0">
+                                {% for serialization in manga.serializations %}
+                                    {{ serialization.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if manga.published %}
+                        <div class="col-md-4 mb-3">
+                            <h6 class="text-muted">Published</h6>
+                            <p class="mb-0">{{ manga.published.string }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'manga/css/detail.css' %}">
+{% endblock %}

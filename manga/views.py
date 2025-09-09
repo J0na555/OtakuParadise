@@ -41,3 +41,20 @@ def manga_list(request):
         'selected_genres':genres,
         'all_genres': all_genres,
     } )
+
+def manga_detail(request, id):
+    url = f"https://api.jikan.moe/v4/manga/{id}/full"
+    info = requests.get(url)
+    manga = {}
+    if info.status_code == 200:
+        manga = info.json().get('data', {})
+    
+    title_english = next((t["title"] for t in manga.get("titles", []) if t["type"] == "English"), "")
+    title_japanese = next((t["title"] for t in manga.get("titles", []) if t["type"] == "Japanese"), "")
+
+    return render(request, 'manga/manga_detail.html', {
+        'manga': manga,
+        "title_english": title_english,
+        "title_japanese": title_japanese,
+    })
+    
