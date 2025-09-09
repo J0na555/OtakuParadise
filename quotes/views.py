@@ -11,7 +11,7 @@ def quote_list(request):
     filter by query/anime/character, and paginate results.
     """
 
-    # 1️⃣ Fetch all quotes
+    # Fetch all quotes
     try:
         response = requests.get(f"{API_BASE}/quotes")  
         data = response.json()
@@ -26,7 +26,7 @@ def quote_list(request):
     else:
         quotes = []
 
-    # 2️⃣ Pick featured quotes
+    # Pick featured quotes
     featured_quotes = random.sample(quotes, min(10, len(quotes))) if quotes else []
 
     # 3️⃣ Get search/filter params
@@ -34,7 +34,7 @@ def quote_list(request):
     anime_filter = request.GET.get("anime", "").strip()
     character_filter = request.GET.get("character", "").strip()
 
-    # 4️⃣ Filter quotes
+   # Filter quotes
     filtered_quotes = quotes
     if query:
         filtered_quotes = [
@@ -53,12 +53,12 @@ def quote_list(request):
             if character_filter.lower() in q.get("character", "").lower()
         ]
 
-    # 5️⃣ Pagination
+   
     paginator = Paginator(filtered_quotes, 10)  # 10 quotes per page
     page_number = request.GET.get("page", 1)
     page_obj = paginator.get_page(page_number)
 
-    # 6️⃣ Render
+    
     return render(request, "quotes/quotes_list.html", {
         "featured_quotes": featured_quotes,
         "page_obj": page_obj,

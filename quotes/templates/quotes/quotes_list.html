@@ -1,89 +1,158 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} News - Otaku Paradise {% endblock %}
+{% block title %} Quotes - Otaku Paradise {% endblock %}
 
 {% block content %}
-  <title>Quotes</title>
-  <style>
-    .quote-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
-    .quote-text { font-size: 1.1em; margin-bottom: 8px; }
-    .quote-meta { font-size: 0.9em; color: #555; }
-    .featured { background-color: #f9f9f9; }
-    .filters { margin-bottom: 20px; }
-  </style>
-</head>
-<body>
-  <h1>Anime Quotes</h1>
-
-  <!-- Search & Filter -->
-  <div class="filters">
-    <form method="get">
-      <input type="text" name="q" placeholder="Search by character or anime" value="{{ query }}">
-      <input type="text" name="anime" placeholder="Anime filter" value="{{ anime_filter }}">
-      <input type="text" name="character" placeholder="Character filter" value="{{ character_filter }}">
-      <button type="submit">Search</button>
-      <a href="/quotes/quotes_list/">Reset Filters</a>
-    </form>
-  </div>
-
-  <!-- Featured Quotes -->
-  <h2>Featured Quotes</h2>
-  {% if featured_quotes %}
-    {% for quote in featured_quotes %}
-      <div class="quote-card featured">
-        <div class="quote-text">"{{ quote.quote }}"</div>
-        <div class="quote-meta">
-          <a href="?anime={{ quote.anime.name }}">{{ quote.anime.name }}</a> - 
-          <a href="?character={{ quote.character }}">{{ quote.character }}</a>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 fw-bold text-center" style="color: #6a11cb;">Anime Quotes</h1>
+            <p class="text-center text-muted">Discover memorable quotes from your favorite anime</p>
         </div>
-      </div>
-    {% endfor %}
-  {% else %}
-    <p>No featured quotes available.</p>
-  {% endif %}
-
-  <!-- Paginated Results -->
-  <h2>All Quotes</h2>
-  {% if page_obj %}
-    {% for quote in page_obj %}
-      <div class="quote-card">
-        <div class="quote-text">"{{ quote.quote }}"</div>
-        <div class="quote-meta">
-          <a href="?anime={{ quote.anime.name }}">{{ quote.anime.name }}</a> - 
-          <a href="?character={{ quote.character }}">{{ quote.character }}</a>
-        </div>
-      </div>
-    {% endfor %}
-
-    <!-- Pagination Controls -->
-    <div class="pagination-container">
-      {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&anime={{ anime_filter }}&character={{ character_filter }}">
-          <i class="fas fa-chevron-left me-1"></i>  Previous
-        </a>
-      {% else %}
-            <span class="pagination-btn disabled">
-                <i class="fas fa-chevron-left me-1"></i> Previous
-            </span>
-      {% endif %}
-      <div class="pagination-info">
-        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-      {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&anime={{ anime_filter }}&character={{ character_filter }}">
-            Next <i class="fas fa-chevron-right ms-1"></i>
-        </a>
-    {% else %}
-        <span class="pagination-btn disabled">
-            Next <i class="fas fa-chevron-right ms-1"></i>
-        </span>
-    {% endif %}
     </div>
-  {% else %}
-    <p>No quotes found.</p>
-  {% endif %}
-</body>
+
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Search & Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="searchInput" class="form-label">Search Quotes</label>
+                            <input type="text" class="form-control" id="searchInput" name="q" placeholder="Search by character or anime" value="{{ query }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="animeFilter" class="form-label">Anime Filter</label>
+                            <input type="text" class="form-control" id="animeFilter" name="anime" placeholder="Filter by anime" value="{{ anime_filter }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="characterFilter" class="form-label">Character Filter</label>
+                            <input type="text" class="form-control" id="characterFilter" name="character" placeholder="Filter by character" value="{{ character_filter }}">
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary me-2">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
+                            <a href="{% url 'quotes:list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Reset Filters
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if featured_quotes %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <h2 class="mb-0"><i class="fas fa-star me-2 text-warning"></i>Featured Quotes</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-1 g-4">
+                        {% for quote in featured_quotes %}
+                            <div class="col">
+                                <div class="card border-0 shadow-sm quote-card featured-quote">
+                                    <div class="card-body">
+                                        <div class="quote-text fs-5 fst-italic mb-3">"{{ quote.quote }}"</div>
+                                           <div class="quote-meta text-muted">
+                                                From <a href="?anime={{ quote.anime.name }}" class="text-decoration-none fw-bold">{{ quote.anime.name }}</a> - 
+                                                By 
+                                                {% if quote.character and quote.character.mal_id %}
+                                                    <a href="{% url 'characters:character_detail' quote.character.mal_id %}" class="text-decoration-none fw-bold">{{ quote.character}}</a>
+                                                {% else %}
+                                                    <span class="fw-bold">{{ quote.character|default:"Unknown Character" }}</span>
+                                                {% endif %}
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white">
+                    <h2 class="mb-0"><i class="fas fa-quote-left me-2"></i>All Quotes</h2>
+                </div>
+                <div class="card-body">
+                    {% if page_obj %}
+                        <div class="row row-cols-1 g-4">
+                            {% for quote in page_obj %}
+                                <div class="col">
+                                    <div class="card border-0 shadow-sm quote-card">
+                                        <div class="card-body">
+                                            <div class="quote-text fs-5 fst-italic mb-3">"{{ quote.quote }}"</div>
+                                            <div class="quote-meta text-muted">
+                                                From <a href="?anime={{ quote.anime.name }}" class="text-decoration-none fw-bold">{{ quote.anime.name }}</a> - 
+                                                By 
+                                                {% if quote.character and quote.character.mal_id %}
+                                                    <a href="{% url 'characters:character_detail' quote.character.mal_id %}" class="text-decoration-none fw-bold">{{ quote.character }}</a>
+                                                {% else %}
+                                                    <span class="fw-bold">{{ quote.character|default:"Unknown Character" }}</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-quote-right fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Quotes Found</h4>
+                            <p class="text-muted">Try adjusting your search filters</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if page_obj %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="pagination-container">
+                {% if page_obj.has_previous %}
+                    <a class="pagination-btn" href="?page={{ page_obj.previous_page_number }}&q={{ query }}&anime={{ anime_filter }}&character={{ character_filter }}">
+                        <i class="fas fa-chevron-left me-1"></i> Previous
+                    </a>
+                {% else %}
+                    <span class="pagination-btn disabled">
+                        <i class="fas fa-chevron-left me-1"></i> Previous
+                    </span>
+                {% endif %}
+
+                <div class="pagination-info">
+                    Page <span class="page-number">{{ page_obj.number }}</span> of {{ page_obj.paginator.num_pages }}
+                </div>
+
+                {% if page_obj.has_next %}
+                    <a class="pagination-btn" href="?page={{ page_obj.next_page_number }}&q={{ query }}&anime={{ anime_filter }}&character={{ character_filter }}">
+                        Next <i class="fas fa-chevron-right ms-1"></i>
+                    </a>
+                {% else %}
+                    <span class="pagination-btn disabled">
+                        Next <i class="fas fa-chevron-right ms-1"></i>
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
 {% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'manga/css/manga.css' %}">
+    <link rel="stylesheet" href="{% static 'quotes/css/quotes.css' %}">
 {% endblock %}
