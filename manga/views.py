@@ -1,16 +1,18 @@
 from django.shortcuts import render
-import requests
+
+from otakuparadise.utils import api_get, safe_page
+
+JIKAN_BASE = "https://api.jikan.moe/v4"
 
 
 def manga_list(request):
-    query = request.GET.get('q', '')
-    page = request.GET.get('page', 1)
-    genres = request.GET.getlist('genres')
-    year = request.GET.get('year', '')
-    min_score = request.GET.get('min_score', '')
+    query = request.GET.get("q", "")
+    page = safe_page(request)
+    genres = request.GET.getlist("genres")
+    year = request.GET.get("year", "")
+    min_score = request.GET.get("min_score", "")
 
     params = {"page": page, "q": query}
-
     if genres:
         params["genres"] = ",".join(genres)
     if year:
@@ -19,42 +21,47 @@ def manga_list(request):
     if min_score:
         params["min_score"] = min_score
 
-    response = requests.get("https://api.jikan.moe/v4/manga", params=params)
-    json_data = response.json()
-    manga_list = json_data.get('data', [])
-    pagination = json_data.get('pagination', {})
-    pagination['has_previous_page'] = int(page) > 1
+    json_data = api_get(f"{JIKAN_BASE}/manga", params=params)
+    manga_list = json_data.get("data", [])
+    pagination = json_data.get("pagination", {})
+    pagination["has_previous_page"] = page > 1
 
+    genre_data = api_get(f"{JIKAN_BASE}/genres/manga")
+    all_genres = genre_data.get("data", [])
 
-    genre_response = requests.get("https://api.jikan.moe/v4/genres/manga")
-    genre_data = genre_response.json()
-    all_genres = genre_data.get('data', [])
+    return render(
+        request,
+        "manga/manga_list.html",
+        {
+            "mangas": manga_list,
+            "pagination": pagination,
+            "query": query,
+            "current_page": page,
+            "year": year,
+            "min_score": min_score,
+            "selected_genres": genres,
+            "all_genres": all_genres,
+        },
+    )
 
-
-    return render(request, 'manga/manga_list.html',{
-        'mangas': manga_list,
-        'pagination': pagination,
-        'query': query,
-        'current_page': int(page),
-        'year': year,
-        'min_score': min_score,
-        'selected_genres':genres,
-        'all_genres': all_genres,
-    } )
 
 def manga_detail(request, id):
-    url = f"https://api.jikan.moe/v4/manga/{id}/full"
-    info = requests.get(url)
-    manga = {}
-    if info.status_code == 200:
-        manga = info.json().get('data', {})
-    
-    title_english = next((t["title"] for t in manga.get("titles", []) if t["type"] == "English"), "")
-    title_japanese = next((t["title"] for t in manga.get("titles", []) if t["type"] == "Japanese"), "")
+    json_data = api_get(f"{JIKAN_BASE}/manga/{id}/full")
+    manga = json_data.get("data", {})
 
-    return render(request, 'manga/manga_detail.html', {
-        'manga': manga,
-        "title_english": title_english,
-        "title_japanese": title_japanese,
-    })
-    
+    title_english = next(
+        (t["title"] for t in manga.get("titles", []) if t["type"] == "English"), ""
+    )
+    title_japanese = next(
+        (t["title"] for t in manga.get("titles", []) if t["type"] == "Japanese"), ""
+    )
+
+    return render(
+        request,
+        "manga/manga_detail.html",
+        {
+            "manga": manga,
+            "title_english": title_english,
+            "title_japanese": title_japanese,
+        },
+    )

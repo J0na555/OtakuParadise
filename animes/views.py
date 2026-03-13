@@ -1,36 +1,37 @@
 from django.shortcuts import render
-import requests
+
+from otakuparadise.utils import api_get, safe_page
+
+JIKAN_BASE = "https://api.jikan.moe/v4"
+
 
 def top_anime(request):
-    page = request.GET.get('page', 1)
-    url = f"https://api.jikan.moe/v4/top/anime?page={page}"
+    page = safe_page(request)
 
+    json_data = api_get(f"{JIKAN_BASE}/top/anime", params={"page": page})
+    anime_list = json_data.get("data", [])
+    pagination = json_data.get("pagination", {})
+    pagination["has_previous_page"] = page > 1
 
+    return render(
+        request,
+        "animes/top_anime.html",
+        {
+            "animes": anime_list,
+            "pagination": pagination,
+            "current_page": page,
+        },
+    )
 
-    response = requests.get(url)
-    json_data = response.json()
-
-
-
-    anime_list = json_data.get('data', [])
-    pagination = json_data.get('pagination', {})
-    pagination['has_previous_page'] = int(page) > 1
-
-    return render(request, 'animes/top_anime.html', {
-        'animes': anime_list,
-        'pagination': pagination,
-        'current_page': int(page)
-    })
 
 def anime_list(request):
-    query = request.GET.get('q', '')
-    page = request.GET.get('page', 1)
-    genres = request.GET.getlist('genres')
-    year = request.GET.get('year', '')
-    min_score = request.GET.get('min_score', '')
+    query = request.GET.get("q", "")
+    page = safe_page(request)
+    genres = request.GET.getlist("genres")
+    year = request.GET.get("year", "")
+    min_score = request.GET.get("min_score", "")
 
     params = {"page": page, "q": query}
-
     if genres:
         params["genres"] = ",".join(genres)
     if year:
@@ -38,49 +39,48 @@ def anime_list(request):
         params["end_date"] = f"{year}-12-31"
     if min_score:
         params["min_score"] = min_score
-    
-    response = requests.get("https://api.jikan.moe/v4/top/anime", params=params)
-    json_data = response.json()
-    anime_list = json_data.get('data', [])
-    pagination = json_data.get('pagination', {})
-    pagination['has_previous_page'] = int(page) > 1
 
-    #fetch all genres 
-    genre_response = requests.get("https://api.jikan.moe/v4/genres/anime")
-    genre_data = genre_response.json()
-    all_genres = genre_data.get('data', [])
+    json_data = api_get(f"{JIKAN_BASE}/top/anime", params=params)
+    anime_list = json_data.get("data", [])
+    pagination = json_data.get("pagination", {})
+    pagination["has_previous_page"] = page > 1
 
+    genre_data = api_get(f"{JIKAN_BASE}/genres/anime")
+    all_genres = genre_data.get("data", [])
 
-    return render(request, 'animes/anime_list.html', {
-        'animes': anime_list,
-        'pagination': pagination,        
-        'query': query,
-        'current_page':int(page),
-        'year': year,
-        'min_score': min_score,
-        'selected_genres': genres,
-        'all_genres': all_genres,
-    })
+    return render(
+        request,
+        "animes/anime_list.html",
+        {
+            "animes": anime_list,
+            "pagination": pagination,
+            "query": query,
+            "current_page": page,
+            "year": year,
+            "min_score": min_score,
+            "selected_genres": genres,
+            "all_genres": all_genres,
+        },
+    )
+
 
 def anime_detail(request, id):
-    url = f"https://api.jikan.moe/v4/anime/{id}"
-    info = requests.get(url)
-    anime = {}
-    if info.status_code == 200:
-        anime = info.json().get('data', {})
+    json_data = api_get(f"{JIKAN_BASE}/anime/{id}")
+    anime = json_data.get("data", {})
 
-    title_english = next((t["title"] for t in anime.get("titles", []) if t["type"] == "English"), "")
-    title_japanese = next((t["title"] for t in anime.get("titles", []) if t["type"] == "Japanese"), "")
-    
-    return render(request, "animes/anime_detail.html", {
-        "anime": anime,
-        "title_english": title_english,
-        "title_japanese": title_japanese,
-    })
+    title_english = next(
+        (t["title"] for t in anime.get("titles", []) if t["type"] == "English"), ""
+    )
+    title_japanese = next(
+        (t["title"] for t in anime.get("titles", []) if t["type"] == "Japanese"), ""
+    )
 
-
-
-
-
-
-
+    return render(
+        request,
+        "animes/anime_detail.html",
+        {
+            "anime": anime,
+            "title_english": title_english,
+            "title_japanese": title_japanese,
+        },
+    )

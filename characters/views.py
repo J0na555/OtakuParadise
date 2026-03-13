@@ -1,100 +1,67 @@
 from django.shortcuts import render
-import requests
-from math import ceil
 
+from otakuparadise.utils import api_get, safe_page
 
-API_BASE = "https://api.jikan.moe/v4"
+JIKAN_BASE = "https://api.jikan.moe/v4"
+
 
 def character_list(request):
-    query = request.GET.get('query', '').strip()
+    query = request.GET.get("q", "").strip()
     search_type = request.GET.get("type", "character").lower()
-    page = int(request.GET.get('page', 1)) 
-    per_page = 10 
-
+    page = safe_page(request)
 
     results = []
-    top_characters = []
+    total_pages = 1
 
-    # default page
-    top_url=  f"{API_BASE}/top/characters?page={page}"
-    top_response = requests.get(top_url)
-    if top_response.status_code == 200:
-        top_characters = top_response.json().get('data', [])
-        top_toatal = top_response.json().get('pagination',  {}).get('last_visibe_page', 1)
-    else:
-        top_toatal = 1
+    top_data = api_get(f"{JIKAN_BASE}/top/characters", params={"page": page})
+    top_characters = top_data.get("data", [])
 
-    
-    # search by character or anime
     if query:
-        if search_type =="character":
-            character_url = f"{API_BASE}/characters?q={query}&page={page}"
-            character_response = requests.get(character_url)
-            if character_response.status_code == 200:
-                results = character_response.json().get('data', [])
-                total_pages = character_response.json().get('pagination', {}).get("last_visible_page", 1)
-            else:
-                results = []
-                total_pages = 1
+        if search_type == "character":
+            char_data = api_get(
+                f"{JIKAN_BASE}/characters", params={"q": query, "page": page}
+            )
+            raw = char_data.get("data", [])
+            # Wrap top-level results so template can use char.character.* uniformly
+            results = [{"character": item} for item in raw]
+            total_pages = (
+                char_data.get("pagination", {}).get("last_visible_page", 1)
+            )
 
         elif search_type == "anime":
-            #search anime first
-            anime_url = f"{API_BASE}/anime?q={query}"
-            anime_response = requests.get(anime_url)
-            anime_data = anime_response.json().get('data', []) if anime_response.status_code == 200 else []
-                # put the anime id that is obtained into the characters url
-            if anime_data:
-                anime_id = anime_data[0]['mal_id']
-                char_url = f"{API_BASE}/anime/{anime_id}/characters"
-                char_response = requests.get(char_url)
-                if char_response.status_code == 200:
-                    results = char_response.json().get('data', [])
-                    total_pages = 1
-                else:
-                    results = []
-                    total_pages = 1
-            else:
-                results = []
-                total_pages = 1
-        else:
-            results = []
-            total_pages = 1
-    else:
-        results = []
-        total_pages = 1
-    
-    context = {
-        "results":results,
-        "query": query, 
-        "search_type": search_type,
-        "top_characters": top_characters,
-        "page":page,
-        "total_pages":total_pages
-    }
+            anime_data = api_get(f"{JIKAN_BASE}/anime", params={"q": query})
+            anime_list = anime_data.get("data", [])
+            if anime_list:
+                anime_id = anime_list[0]["mal_id"]
+                char_data = api_get(f"{JIKAN_BASE}/anime/{anime_id}/characters")
+                results = char_data.get("data", [])
 
-    # print("Search results:", results)
-    # print("Query:", query)
-    # print("Search type:", search_type)
-
-  
-    return render(request, 'characters/character_list.html', context)
+    return render(
+        request,
+        "characters/character_list.html",
+        {
+            "results": results,
+            "query": query,
+            "search_type": search_type,
+            "top_characters": top_characters,
+            "page": page,
+            "total_pages": total_pages,
+        },
+    )
 
 
 def character_detail(request, id):
-    base_url = "https://api.jikan.moe/v4/characters"
-    url = f"https://api.jikan.moe/v4/characters/{id}/full"
-    info = requests.get(url)
-    character = {}
-    if info.status_code == 200:
-        character = info.json().get('data', {})
-    
-    anime_response = requests.get(f"{base_url}/{id}/anime")
-    anime_roles = anime_response.json().get('data', []) if anime_response.status_code == 200 else []
+    char_data = api_get(f"{JIKAN_BASE}/characters/{id}/full")
+    character = char_data.get("data", {})
 
-     
-    return render(request, 'characters/character_detail.html', {
-        'character': character,
-        'anime_roles': anime_roles
-    })
+    anime_data = api_get(f"{JIKAN_BASE}/characters/{id}/anime")
+    anime_roles = anime_data.get("data", [])
 
-    
+    return render(
+        request,
+        "characters/character_detail.html",
+        {
+            "character": character,
+            "anime_roles": anime_roles,
+        },
+    )
