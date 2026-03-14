@@ -151,8 +151,6 @@ The application integrates with the Jikan API (Unofficial MyAnimeList API) to fe
 
 ## 🌐 Live Demo
 
-[live demo](https://otakuparadise-production.up.railway.app/)
-
 [live demo](https://otakuparadise-6vx7.onrender.com/)
 
 ## 🤝 Contributing
