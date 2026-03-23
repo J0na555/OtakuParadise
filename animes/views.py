@@ -40,7 +40,7 @@ def anime_list(request):
     if min_score:
         params["min_score"] = min_score
 
-    json_data = api_get(f"{JIKAN_BASE}/top/anime", params=params)
+    json_data = api_get(f"{JIKAN_BASE}/seasons/now", params=params)
     anime_list = json_data.get("data", [])
     pagination = json_data.get("pagination", {})
     pagination["has_previous_page"] = page > 1

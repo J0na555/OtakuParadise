@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %} {{ manga.title_english }} - Otaku Paradise {% endblock %}
+{% block title %} {{ manga.title_english|default:manga.title }} - Otaku Paradise {% endblock %}
 
 {% block content %}
 <div class="container mt-4">
     <div class="mb-4">
-        <a href="{% url 'manga:list' %}" class="btn btn-outline-primary">
+        <a href="{% url 'manga:list' %}?base_url={{ base_url|urlencode }}" class="btn btn-outline-primary">
             <i class="fas fa-arrow-left me-2"></i>Back to Manga List
         </a>
     </div>
@@ -13,13 +13,15 @@
     <div class="card border-0 shadow-lg mb-5">
         <div class="row g-0">
             <div class="col-md-4">
-                <img src="{{ manga.images.jpg.image_url }}" class="img-fluid rounded-start h-100" alt="{{ manga.title_english }}" style="object-fit: cover;">
+                <img src="{{ manga.images.jpg.image_url|default:'https://via.placeholder.com/300x450?text=No+Cover' }}" class="img-fluid rounded-start h-100" alt="{{ manga.title_english|default:manga.title }}" style="object-fit: cover;">
             </div>
             
             <div class="col-md-8">
                 <div class="card-body p-4">
-                    <h1 class="card-title display-5 fw-bold mb-2" style="color: #6a11cb;">{{ manga.title_english }}</h1>
-                    <h2 class="card-subtitle mb-4 text-muted">{{ manga.title_japanese }}</h2>
+                    <h1 class="card-title display-5 fw-bold mb-2" style="color: #6a11cb;">{{ manga.title_english|default:manga.title }}</h1>
+                    {% if manga.title_japanese %}
+                        <h2 class="card-subtitle mb-4 text-muted">{{ manga.title_japanese }}</h2>
+                    {% endif %}
                     
                     <div class="d-flex flex-wrap gap-2 mb-4">
                         <span class="badge bg-primary fs-6 py-2">{{ manga.status }}</span>
