@@ -109,7 +109,7 @@
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white">
-                    <h2 class="mb-0"><i class="fas fa-crown me-2 text-warning"></i>Top Characters</h2>
+                    <h2 class="mb-0"><i class="fas fa-fire me-2 text-danger"></i>Trending Characters</h2>
                 </div>
                 <div class="card-body p-4">
                     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
@@ -117,15 +117,21 @@
                             <div class="col">
                                 <div class="card h-100 border-0 shadow-sm character-card">
                                     <div class="position-relative">
-                                        <img src="{{ char.images.jpg.image_url }}" class="card-img-top" alt="{{ char.name }}" style="height: 250px; object-fit: cover;">
+                                        <img src="{{ char.image_url }}" class="card-img-top" alt="{{ char.name }}" style="height: 250px; object-fit: cover;">
                                     </div>
                                     <div class="card-body text-center">
                                         <h6 class="card-title">{{ char.name }}</h6>
                                     </div>
                                     <div class="card-footer bg-white border-0 pt-0">
-                                        <a href="{% url 'characters:character_detail' char.mal_id %}" class="btn btn-sm btn-outline-primary w-100">
-                                            Details
-                                        </a>
+                                        {% if char.id_mal %}
+                                            <a href="{% url 'characters:character_detail' char.id_mal %}" class="btn btn-sm btn-outline-primary w-100">
+                                                Details
+                                            </a>
+                                        {% elif char.id_anilist %}
+                                            <a href="https://anilist.co/character/{{ char.id_anilist }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary w-100">
+                                                View on AniList
+                                            </a>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +153,7 @@
                             Page <span class="page-number">{{ page }}</span>
                         </div>
                         
-                        {% if page < 50 %}  <!-- Jikan top API has ~50 pages -->
+                        {% if page < top_total_pages %}
                             <a class="pagination-btn" href="?page={{ page|add:'1' }}">
                                 Next <i class="fas fa-chevron-right ms-1"></i>
                             </a>
